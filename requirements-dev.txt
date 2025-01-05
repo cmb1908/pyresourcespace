@@ -1,0 +1,2 @@
+types-lxml
+types-requests
