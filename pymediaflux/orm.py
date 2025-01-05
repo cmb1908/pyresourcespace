@@ -2,8 +2,6 @@ from lxml import etree
 import requests
 from typing import Generator, Optional, Union
 
-from . import xml
-
 
 class Request:
     url = ""
@@ -99,7 +97,8 @@ class Asset(Request):
 
     @property
     def is_collection(self) -> bool:
-        return self.data.get("collection") == "true"
+        c = self.data.get("collection")
+        return c == "true"
 
     @property
     def has_exif(self) -> bool:
@@ -123,12 +122,14 @@ class Asset(Request):
 
     @property
     def type(self) -> str:
-        return self.data.get("type")
+        ty = self.data.find("type")
+        return "" if ty is None else ty.text
 
     @property
     def data(self):
         if self._data is None:
-            self._data = self.post("asset.get", [("id", self.id)])
+            r = self.post("asset.get", [("id", self.id)])
+            self._data = None if r is None else r.getchildren()[0]
         return self._data
 
 
