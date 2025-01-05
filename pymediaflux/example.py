@@ -1,23 +1,22 @@
 import click
 from dotenv import load_dotenv
 import json
+
 import os
 
-import orm
+from . import orm
 
 
-def members(id: str):
-    obj = orm.Collection(id)
-    for m in obj.members:
-        print(m)
+def post_sample():
+    obj = orm.Server()
+    print(json.dumps(obj.version, indent=4, sort_keys=True))
 
 
 @click.command()
 @click.option("--api-host", required=False, help="API host (e.g., api.example.com)")
 @click.option("--api-port", required=False, help="API port (optional)")
 @click.option("--api-token", required=False, help="API token for authentication")
-@click.argument("id")
-def main(api_host, api_port, api_token, id):
+def main(api_host, api_port, api_token):
     """
     Sends a request to the MediaFlux API to fetch server version details.
     """
@@ -49,7 +48,7 @@ def main(api_host, api_port, api_token, id):
 
     orm.Request.url = url
     orm.Request.headers = headers
-    members(id)
+    post_sample()
 
 
 if __name__ == "__main__":

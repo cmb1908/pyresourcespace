@@ -1,9 +1,9 @@
 import click
 from dotenv import load_dotenv
-import json
+from lxml import etree
 import os
 
-import orm
+from . import orm
 
 
 def asset(id: str):
@@ -11,7 +11,7 @@ def asset(id: str):
     print(obj.name)
     print(obj.extension)
     print(obj.type)
-    print(json.dumps(obj.data, indent=4, sort_keys=True))
+    print(etree.tostring(obj.data, pretty_print=True, encoding="unicode"))
 
 
 @click.command()

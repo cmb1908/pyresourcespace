@@ -1,15 +1,16 @@
 from lxml import etree
 import requests
-from typing import Generator, Optional
+from typing import Generator, Optional, Union
 
-import xml
+from . import xml
 
 
 class Request:
     url = ""
     headers: dict[str, str] = {}
 
-    def parse_xml(self, response_xml: str) -> dict:
+    @classmethod
+    def parse_xml(cls, response_xml: str) -> "etree._Element":
         """
         Parses the given XML string, returning the <result> content if <reply type="result"> is found.
         Raises an exception if the <reply> type is not "result".
@@ -47,9 +48,10 @@ class Request:
         if result_element is None:
             raise ValueError("No <result> element found in the reply.")
 
-        return xml.etree_to_dict(result_element)
+        return result_element
 
-    def post(self, name: str = "version", args: Optional[list] = None) -> dict:
+    @classmethod
+    def post(cls, name: str = "version", args: Optional[list] = None) -> "etree._Element":
         if args is None:
             argstr = ""
         else:
@@ -60,47 +62,64 @@ class Request:
                 <service name="{name}">{argstr}</service>
             </request>"""
 
-        response = requests.post(self.url, headers=self.headers, data=payload)
+        response = requests.post(cls.url, headers=cls.headers, data=payload)
         response.raise_for_status()  # Raise an HTTPError for bad responses (4xx and 5xx)
 
         try:
-            return self.parse_xml(response.text)
+            return cls.parse_xml(response.text)
         except ValueError:
             raise ValueError(f'Unexpected response from "{payload}" of "{response.text}"')
 
 
 class Asset(Request):
-    def __init__(self, id: str) -> None:
-        self.id = id
-        self._data: Optional[dict] = None
+    @classmethod
+    def query_name(cls, name: str) -> Union["Asset", "Collection"]:
+        """Finds the newest asset with the given name"""
+        rv = cls.post("asset.query", [("where", f"name = '{name}'"), ("action", "get-meta")])
+        assets = rv.xpath("./asset")
+        asset = sorted(
+            assets,
+            key=lambda obj: int(obj.xpath("./ctime/@millisec")[0]),
+        )[-1]
+        a = cls.from_xml(asset)
+        if a.is_collection:
+            return Collection(a.id)
+        return a
 
     @classmethod
-    def from_data(cls, xml_data: dict) -> "Asset":
-        try:
-            obj = cls(xml_data["_attributes"]["id"])
-        except:
-            print(xml_data)
-        obj._data = xml_data
+    def from_xml(cls, xml_obj: "etree._Element") -> "Asset":
+        obj = cls(xml_obj.get("id"))
+        obj._data = xml_obj
 
         return obj
 
+    def __init__(self, id: Optional[str]) -> None:
+        self.id = id
+        self._data: Optional["etree._Element"] = None
+
     @property
     def is_collection(self) -> bool:
-        return self.data["_attributes"].get("collection") == "true"
+        return self.data.get("collection") == "true"
 
     @property
     def has_exif(self) -> bool:
-        return self.data.get("meta", {}).get("mf-image-exif") is not None
+        exif = self.data.xpath("./meta/mf-image-exif")
+        return len(exif) > 0
 
     @property
     def extension(self) -> str:
-        if type(self.data["name"]) is str:
-            return ""
-        return self.data["name"]["_attributes"]["ext"]
+        ext = self.data.xpath("./name/@ext")
+        return "" if len(ext) == 0 else ext[0]
+
+    @property
+    def mimetype(self) -> str:
+        ty = self.data.xpath("./content/type/text()")
+        return "" if len(ty) == 0 else ty[0]
 
     @property
     def name(self) -> str:
-        return self.data["name"] if type(self.data["name"]) is str else self.data["name"]["text"]
+        name = self.data.find("name")
+        return "" if name is None else name.text
 
     @property
     def type(self) -> str:
@@ -109,60 +128,54 @@ class Asset(Request):
     @property
     def data(self):
         if self._data is None:
-            self._data = self.post("asset.get", [("id", self.id)])["asset"]
+            self._data = self.post("asset.get", [("id", self.id)])
         return self._data
 
 
-class Collection(Request):
-    def __init__(self, id: str) -> None:
-        self.id = id
+class Collection(Asset):
+    def __init__(self, id: Optional[str]) -> None:
         self._assets: Optional[list] = None
+        super().__init__(id)
 
     @property
     def count(self) -> int:
-        return int(self.post("asset.collection.members.count", [("id", self.id)])["count"])
+        rv = self.post("asset.collection.members.count", [("id", self.id)])
+        return int(rv.xpath("./count/text()")[0])
 
     @property
     def members(self) -> Generator[str, None, None]:
         for ix in range(0, self.count, 1000):
-            m = self.post(
+            rv = self.post(
                 "asset.collection.members",
                 [("id", self.id), ("size", 1000), ("idx", ix + 1)],
             )
-            if type(m) is str or m.get("id") is None:
-                break
-            if type(m["id"]) is str:
-                yield m["id"]
-            else:
-                for id in m["id"]:
-                    yield id
+            ids = rv.xpath("./id/text()")
+            for id in ids:
+                yield id
 
     @property
     def assets(self) -> Generator[Asset, None, None]:
         for ix in range(0, self.count, 1000):
             print(f"-------{ix}")
-            m = self.post(
+            rv = self.post(
                 "asset.collection.members",
                 [("id", self.id), ("size", 1000), ("idx", ix + 1)],
             )
-            if type(m) is str or m.get("id") is None:
-                break
-            if type(m["id"]) is str:
-                yield Asset(m["id"])
-            else:
+            ids = rv.xpath("./id/text()")
+            if len(ids) > 0:
                 try:
-                    assets = self.post("asset.get", [("id", id) for id in m["id"]])["asset"]
-                    for a in assets:
-                        yield Asset.from_data(a)
+                    assets = self.post("asset.get", [("id", id) for id in ids])
+                    for a in assets.getchildren():
+                        yield Asset.from_xml(a)
                 except ValueError:
                     # mediaflux is spitting errors on assets that it lists exist...
-                    for id in m["id"]:
+                    for id in ids:
                         try:
-                            asset = self.post("asset.get", [("id", id)])["asset"]
+                            assets = self.post("asset.get", [("id", id)])
                         except ValueError:
                             print(f"FAIL: {id}")
                             continue
-                        yield Asset.from_data(asset)
+                        yield Asset.from_xml(assets.getchildren()[0])
 
 
 class Server(Request):
@@ -172,6 +185,6 @@ class Server(Request):
     @property
     def version(self) -> dict:
         if self._version is None:
-            self._version = self.post("server.version")
+            self._version = {child.tag: child.text for child in self.post("server.version")}
 
         return self._version

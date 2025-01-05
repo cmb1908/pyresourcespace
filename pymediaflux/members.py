@@ -3,29 +3,13 @@ from dotenv import load_dotenv
 import json
 import os
 
-import orm
-import util
+from . import orm
 
 
-def stats(obj: "orm.Asset"):
-    r = util.MergeDict()
-    if obj.is_collection:
-        if obj.type == "powerhouse/project":
-            print(f"Project: {obj.name}")
-        elif obj.type == "powerhouse/job/warehouse":
-            print(f" Job: {obj.name}")
-        else:
-            print(f"--Unknown: {obj.name}")
-        cobj = orm.Collection(obj.id)
-        for asset in cobj.assets:
-            r += stats(asset)
-    else:
-        if obj.has_exif:
-            r[obj.type] = {obj.extension: {"exif": 1}}
-        else:
-            r[obj.type] = {obj.extension: {"no-exif": 1}}
-
-    return r
+def members(id: str):
+    obj = orm.Collection(id)
+    for m in obj.members:
+        print(m)
 
 
 @click.command()
@@ -65,8 +49,7 @@ def main(api_host, api_port, api_token, id):
 
     orm.Request.url = url
     orm.Request.headers = headers
-    obj = orm.Asset(id)
-    print(json.dumps(stats(obj), indent=4, sort_keys=True))
+    members(id)
 
 
 if __name__ == "__main__":
