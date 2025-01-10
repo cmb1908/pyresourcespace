@@ -66,7 +66,9 @@ def main(api_host, api_port, api_token, id):
     orm.Request.url = url
     orm.Request.headers = headers
     obj = orm.Asset(id)
-    print(json.dumps(stats(obj), indent=4, sort_keys=True))
+    st = stats(obj)
+    print(obj.name)
+    print(json.dumps(st, indent=4, sort_keys=True))
 
 
 if __name__ == "__main__":

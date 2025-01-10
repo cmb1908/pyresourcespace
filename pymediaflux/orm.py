@@ -105,6 +105,10 @@ class Asset(Request):
         exif = self.data.xpath("./meta/mf-image-exif")
         return len(exif) > 0
 
+    def checksum(self, base: int = 10) -> str:
+        cs = self.data.xpath(f"./content/csum[@base='{base}']")
+        return "" if len(cs) == 0 else cs[0]
+
     @property
     def extension(self) -> str:
         ext = self.data.xpath("./name/@ext")
