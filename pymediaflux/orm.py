@@ -1,6 +1,6 @@
 from lxml import etree
 import requests
-from typing import Generator, Optional, Union
+from typing import Generator, Optional, Union, cast
 
 
 class Request:
@@ -181,6 +181,18 @@ class Collection(Asset):
                             print(f"FAIL: {id}")
                             continue
                         yield Asset.from_xml(assets.getchildren()[0])
+
+
+class Filter(Asset):
+    @classmethod
+    def query_ns_name(cls, namespace: str, name: str) -> "Filter":
+        """Finds the filter with the given namespace & name"""
+        rv = cls.post("asset.filter.describe", [("namespace", namespace), ("name", name)])
+        f = cast("Filter", cls.from_xml(rv.getchildren()[0]))
+        return f
+
+    def __init__(self, id: Optional[str]) -> None:
+        super().__init__(id)
 
 
 class Server(Request):
