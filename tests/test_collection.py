@@ -6,7 +6,12 @@ from pymediaflux import orm
 def test_collection_count(server_connect):
     obj = orm.Collection("7069835")
 
-    check.greater_equal(obj.count, 149, f"Expecting 149 DAM-2 assets, got {obj.count}")
+    check.greater_equal(obj.count, 6, f"Expecting 6 DAM-2 assets, got {obj.count}")
+    check.greater_equal(
+        obj.count_all,
+        127,
+        f"Expecting 127 DAM-2 assets (including nesting), got {obj.count_all}",
+    )
 
 
 def test_collection_members(server_connect):

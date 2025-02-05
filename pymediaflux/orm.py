@@ -115,6 +115,16 @@ class Asset(Request):
         return "" if len(ext) == 0 else ext[0]
 
     @property
+    def mf_name(self) -> str:
+        val = self.data.xpath("./meta/mf-name/name/text()")
+        return "" if len(val) == 0 else val[0]
+
+    @property
+    def mf_source_name(self) -> str:
+        val = self.data.xpath("./meta/mf-source-name/name/text()")
+        return "" if len(val) == 0 else val[0]
+
+    @property
     def mimetype(self) -> str:
         ty = self.data.xpath("./content/type/text()")
         return "" if len(ty) == 0 else ty[0]
@@ -123,6 +133,11 @@ class Asset(Request):
     def name(self) -> str:
         name = self.data.find("name")
         return "" if name is None else name.text
+
+    @property
+    def parent(self) -> str:
+        parent = self.data.find("parent")
+        return "" if parent is None else parent.text
 
     @property
     def type(self) -> str:
@@ -148,6 +163,14 @@ class Collection(Asset):
         return int(rv.xpath("./count/text()")[0])
 
     @property
+    def count_all(self) -> int:
+        rv = self.post(
+            "asset.collection.members.count",
+            [("id", self.id), ("include-subcollections", "true")],
+        )
+        return int(rv.xpath("./count/text()")[0])
+
+    @property
     def members(self) -> Generator[str, None, None]:
         for ix in range(0, self.count, 1000):
             rv = self.post(
@@ -158,14 +181,12 @@ class Collection(Asset):
             for id in ids:
                 yield id
 
-    @property
-    def assets(self) -> Generator[Asset, None, None]:
+    def get_assets(self, get_all=False) -> Generator[Asset, None, None]:
         for ix in range(0, self.count, 1000):
-            print(f"-------{ix}")
-            rv = self.post(
-                "asset.collection.members",
-                [("id", self.id), ("size", 1000), ("idx", ix + 1)],
-            )
+            args = [("id", self.id), ("size", 1000), ("idx", ix + 1)]
+            if get_all:
+                args.append(("include-subcollections", "true"))
+            rv = self.post("asset.collection.members", args)
             ids = rv.xpath("./id/text()")
             if len(ids) > 0:
                 try:
@@ -181,6 +202,14 @@ class Collection(Asset):
                             print(f"FAIL: {id}")
                             continue
                         yield Asset.from_xml(assets.getchildren()[0])
+
+    @property
+    def assets(self) -> Generator[Asset, None, None]:
+        return self.get_assets()
+
+    @property
+    def assets_all(self) -> Generator[Asset, None, None]:
+        return self.get_assets(True)
 
 
 class Filter(Asset):
