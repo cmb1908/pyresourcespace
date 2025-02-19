@@ -3,18 +3,30 @@ import pytest_check as check
 from pymediaflux import orm
 
 
-def test_system_version(server_connect):
-    obj = orm.Server()
+def test_filter_namespace_count(server_connect):
+    spaces = orm.Namespace.filter_spaces()
 
-    vendor = "Arcitecta Pty. Ltd."
+    # Should have more than 5
     check.greater_equal(
-        obj.version["vendor"],
-        vendor,
-        'Expecting vendor "{vendor}", got "{obj.version["vendor"]}"',
+        len(spaces), 5, f"Expecting at least 5 spaces, got {len(spaces)}"
     )
 
-    major = int(obj.version["version"].split(".")[0])
-    minor = int(obj.version["version"].split(".")[1])
-    check.greater_equal(major, 4, "Expecting version greater than 4.16.X")
-    if major == 4:
-        check.greater_equal(minor, 16, "Expecting version greater than 4.16.X")
+
+def test_filter_namespace_powerhouse_toi(server_connect):
+    spaces = orm.Namespace.filter_spaces()
+
+    # powerhouse-toi should be in there
+    check.is_in("powerhouse-toi", [x.namespace for x in spaces])
+
+
+def test_filter_namespace_label(server_connect):
+    toi_ns = orm.Namespace("powerhouse-toi")
+
+    # powerhouse-toi label should be...
+    check.equal("02. Thing of Interest", toi_ns.label)
+
+
+def test_filter_namespace_list(server_connect):
+    toi_ns = orm.Namespace("powerhouse-toi")
+
+    check.equal(2, len(toi_ns.filters))

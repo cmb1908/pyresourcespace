@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<filter namespace="powerhouse-toi" name="Title">
+  <description>Thing of Interest Title</description>
+  <arg>
+    <name>Title</name>
+    <description>Title</description>
+    <type>
+      <name>string</name>
+    </type>
+  </arg>
+  <arg>
+    <name>Operator</name>
+    <description>Operator</description>
+    <type>
+      <name>enumeration</name>
+      <restriction base="enumeration">
+        <value description="equals">= ignore-case</value>
+        <value description="not equal to">!= ignore-case</value>
+        <value description="contains any of">contains-any</value>
+        <value description="contains all of">contains-all</value>
+        <value description="contains no">contains-no</value>
+        <value description="starts with">starts with ignore-case</value>
+        <value description="ends with">ends with ignore-case</value>
+      </restriction>
+    </type>
+  </arg>
+  <aql>xpath(powerhouse.object.of.interest:cataloging/title) $${Operator}$$ '$${Title}$$' or xpath(powerhouse:related-objects/object/title) $${Operator}$$ '$${Title}$$'</aql>
+</filter>

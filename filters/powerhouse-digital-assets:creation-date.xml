@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<filter namespace="powerhouse-digital-assets" name="creation-date">
+  <label>Digital Asset Creation Time</label>
+  <arg>
+    <name>op</name>
+    <label>Operator</label>
+    <type>
+      <name>enumeration</name>
+      <restriction base="enumeration">
+        <value description="before">&lt;</value>
+        <value description="after">&gt;</value>
+      </restriction>
+    </type>
+  </arg>
+  <arg>
+    <name>value</name>
+    <label>Value</label>
+    <type>
+      <name>date</name>
+    </type>
+  </arg>
+  <aql>xpath(powerhouse.digital.asset:production/creation-date) $${op}$$ '$${value}$$'</aql>
+</filter>

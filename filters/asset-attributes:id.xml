@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<filter namespace="asset-attributes" name="id">
+  <label>Asset ID</label>
+  <arg>
+    <name>op</name>
+    <label>Operator</label>
+    <type>
+      <name>enumeration</name>
+      <restriction base="enumeration">
+        <value description="equals">=</value>
+      </restriction>
+    </type>
+  </arg>
+  <arg>
+    <name>value</name>
+    <label>Value</label>
+    <type>
+      <name>asset-id</name>
+    </type>
+  </arg>
+  <aql>id $${op}$$ $${value}$$</aql>
+</filter>

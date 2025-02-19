@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<filter namespace="general" name="name">
+  <description>Case in-sensitive search across name fields</description>
+  <arg>
+    <name>name</name>
+    <label>Name</label>
+    <description>Name</description>
+    <type>
+      <name>string</name>
+    </type>
+  </arg>
+  <aql>name matches anywhere ignore-case '$${name}$$' or xpath(powerhouse.object.of.interest:cataloging/title) starts with ignore-case '$${name}$$' or xpath(powerhouse.object.of.interest:cataloging/name) starts with ignore-case '$${name}$$' or xpath(powerhouse:related-objects/object/title) starts with ignore-case '$${name}$$' or xpath(powerhouse:related-objects/object/name) starts with ignore-case '$${name}$$' or xpath(powerhouse.place.of.interest:cataloging/name) starts with ignore-case '$${name}$$' or xpath(mf-name/name) starts with ignore-case '$${name}$$'</aql>
+</filter>

@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<filter namespace="general" name="General">
+  <description>Case in-sensitive search across multiple fields and descriptions</description>
+  <arg>
+    <name>Value</name>
+    <description>Value</description>
+    <type>
+      <name>string</name>
+    </type>
+  </arg>
+  <aql>name matches anywhere ignore-case '$${Value}$$' or xpath(powerhouse.place.of.interest:cataloging/name) starts with ignore-case '$${Value}$$' or xpath(powerhouse.object.of.interest:description/description) contains ignore-case '$${Value}$$' or xpath(powerhouse:related-objects/object/@object-irn) starts with  '$${Value}$$' or xpath(emu:record/irn) starts with '$${Value}$$' or xpath(powerhouse:related-objects/object/@registration-number) starts with '$${Value}$$' or xpath(powerhouse.object.of.interest:cataloging/registration-number) starts with  '$${Value}$$' or xpath(powerhouse.object.of.interest:cataloging/registration-number) starts with '$${Value}$$' or xpath(powerhouse.digital.asset:production/job-ids/id) starts with '$${Value}$$'</aql>
+</filter>

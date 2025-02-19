@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<filter namespace="lifecycle" name="mtime">
+  <label>Asset Modified Time</label>
+  <arg>
+    <name>op</name>
+    <label>Operator</label>
+    <type>
+      <name>enumeration</name>
+      <restriction base="enumeration">
+        <value description="before">&lt;</value>
+        <value description="after">&gt;</value>
+      </restriction>
+    </type>
+  </arg>
+  <arg>
+    <name>time</name>
+    <label>Date and time</label>
+    <type>
+      <name>date</name>
+    </type>
+  </arg>
+  <aql>mtime $${op}$$ '$${time}$$'</aql>
+</filter>

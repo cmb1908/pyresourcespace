@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<filter namespace="powerhouse-digital-assets" name="type">
+  <label>Digital Asset Type</label>
+  <arg>
+    <name>op</name>
+    <label>Operator</label>
+    <type>
+      <name>enumeration</name>
+      <restriction base="enumeration">
+        <value description="equals">=</value>
+        <value description="not equals">!=</value>
+      </restriction>
+    </type>
+  </arg>
+  <arg>
+    <name>value</name>
+    <label>Value</label>
+    <type>
+      <name>enumeration</name>
+      <restriction base="enumeration">
+        <value>master</value>
+        <value>derivative</value>
+        <value>original</value>
+        <value>other</value>
+        <value>ignore</value>
+      </restriction>
+    </type>
+  </arg>
+  <aql>xpath(powerhouse.digital.asset:cataloging/type) $${op}$$ '$${value}$$'</aql>
+</filter>

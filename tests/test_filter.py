@@ -3,32 +3,25 @@ import pytest_check as check
 from pymediaflux import orm
 
 
-def test_dam_729_mime(server_connect):
-    dam2 = orm.Asset.query_name("DAM-2")
+def test_filter_description(server_connect):
+    f = orm.Filter("powerhouse-toi", "Name")
 
-    mime = {
-        "jpg": "image/jpeg",
-        "tif": "image/tiff",
-        "dng": "image/x-adobe-dng",
-        "pdf": "application/pdf",
-        "mp4": "video/mp4",
-    }
-    for asset in dam2.assets_all:
-        if asset.is_collection:
-            continue
-        check.equal(
-            asset.mimetype,
-            mime[asset.extension],
-            f'Asset({asset.id}, {asset.name}) Bad mime-type "{asset.mimetype}", expected "{mime[asset.extension]}"',
-        )
+    check.equal("Thing of Interest Name", f.description)
 
 
-def test_dam_729_exif(server_connect):
-    dam2 = orm.Asset.query_name("DAM-2")
+def test_filter_label(server_connect):
+    f = orm.Filter("powerhouse-toi", "irn")
 
-    for asset in dam2.assets_all:
-        if asset.is_collection:
-            continue
-        if asset.mimetype[:5] == "image" and not asset.name == "m83.tif":
-            # m83.tif had no exif data
-            check.is_true(asset.has_exif, f"Asset({asset.id}, {asset.name}) has no exif")
+    check.equal("TOI IRN", f.label)
+
+
+def test_filter_toi_irn(server_connect):
+    results = orm.Asset.query("filter 'powerhouse-toi:irn(value=\\'234\\')'")
+
+    check.greater_equal(len(results), 5, f"Expecting at least 5 results, got {len(results)}")
+
+
+def test_filter_toi_irn_in_toi(server_connect):
+    results = orm.Asset.query("filter 'powerhouse-toi:irn(value=\\'234\\')' and asset has parent collection 5642820")
+
+    check.equal(len(results), 3, f"Expecting 3 results, got {len(results)}")

@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<filter namespace="asset-attributes" name="version-count">
+  <label>Version Count</label>
+  <arg>
+    <name>op</name>
+    <label>Operator</label>
+    <type>
+      <name>enumeration</name>
+      <restriction base="enumeration">
+        <value description="equals">=</value>
+        <value description="less than">&lt;</value>
+        <value description="greater than">&gt;</value>
+        <value description="greater than equals">&gt;=</value>
+        <value description="less than equals">&lt;=</value>
+      </restriction>
+    </type>
+  </arg>
+  <arg>
+    <name>value</name>
+    <label>Value</label>
+    <type>
+      <name>integer</name>
+    </type>
+  </arg>
+  <aql>version count $${op}$$ $${value}$$</aql>
+</filter>

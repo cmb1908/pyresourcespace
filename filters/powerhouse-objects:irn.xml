@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<filter namespace="powerhouse-objects" name="irn">
+  <label>Object IRN</label>
+  <arg>
+    <name>value</name>
+    <label>Value</label>
+    <type>
+      <name>string</name>
+    </type>
+  </arg>
+  <aql>xpath(powerhouse:related-objects/object/@object-irn) = '$${value}$$' or (xpath(emu:record/irn) = '$${value}$$' and xpath(emu:record/resource) = 'ecatalogue')</aql>
+  <tag>ui:PASTE_DELIMITER_COMMA</tag>
+  <tag>ui:PASTE_DELIMITER_SPACE</tag>
+  <tag>ui:PASTE_DELIMITER_NEW_LINE</tag>
+</filter>
