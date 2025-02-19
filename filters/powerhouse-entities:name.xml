@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <filter namespace="powerhouse-entities" name="name">
-  <description>Entity Name</description>
+  <label>Entity Name</label>
   <arg>
     <name>name</name>
     <label>Name</label>

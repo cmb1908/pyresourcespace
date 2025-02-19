@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <filter namespace="powerhouse-programmes" name="summary">
-  <label>Programme Summary</label>
+  <label>Program Summary</label>
   <arg>
     <name>op</name>
     <label>Operator</label>

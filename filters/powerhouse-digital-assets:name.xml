@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<filter namespace="asset-attributes" name="name">
+<filter namespace="powerhouse-digital-assets" name="name">
   <label>Name</label>
   <arg>
     <name>op</name>

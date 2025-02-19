@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <filter namespace="powerhouse-programmes" name="completion-date">
-  <label>Programme Completion Date</label>
+  <label>Program Completion Date</label>
   <arg>
     <name>op</name>
     <label>Operator</label>

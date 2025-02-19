@@ -1,9 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
 <filter namespace="powerhouse-objects" name="Title">
+  <label>Object Short Title</label>
   <description>Object of Interest Short Title</description>
   <arg>
     <name>Title</name>
-    <description>Short Title</description>
+    <label>Short Title</label>
     <type>
       <name>string</name>
     </type>

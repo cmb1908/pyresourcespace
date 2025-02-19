@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <filter namespace="powerhouse-objects" name="Name">
-  <description>Object of Interest Name</description>
+  <label>Object Name</label>
   <arg>
     <name>name</name>
     <label>Name</label>

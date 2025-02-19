@@ -7,24 +7,19 @@
     <type>
       <name>enumeration</name>
       <restriction base="enumeration">
-        <value description="equals">=</value>
-        <value description="not equals">!=</value>
-        <value description="contains">contains</value>
-        <value description="contains any">contains-any</value>
-        <value description="contains (ignore case)">contains ignore-case</value>
-        <value description="contains no">contains-no</value>
-        <value description="starts with">starts with</value>
-        <value description="ends with">ends with</value>
-        <value description="less than">&lt;</value>
-        <value description="greater than">&gt;</value>
-        <value description="greater than equals">&gt;=</value>
-        <value description="less than equals">&lt;=</value>
+        <value description="equals">= ignore-case</value>
+        <value description="not equals">!= ignore-case</value>
+        <value description="contains any">contains-any ignore-case</value>
+        <value description="contains all">contains-all ignore-case</value>
+        <value description="contains exactly">contains ignore-case literal</value>
+        <value description="starts with">starts with ignore-case</value>
+        <value description="ends with">ends with ignore-case</value>
       </restriction>
     </type>
   </arg>
   <arg>
     <name>value</name>
-    <label>Value</label>
+    <label>Usage</label>
     <type>
       <name>string</name>
     </type>

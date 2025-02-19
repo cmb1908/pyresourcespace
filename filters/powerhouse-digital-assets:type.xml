@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <filter namespace="powerhouse-digital-assets" name="type">
-  <label>Digital Asset Type</label>
+  <label>Type</label>
   <arg>
     <name>op</name>
     <label>Operator</label>
@@ -14,7 +14,7 @@
   </arg>
   <arg>
     <name>value</name>
-    <label>Value</label>
+    <label>Type</label>
     <type>
       <name>enumeration</name>
       <restriction base="enumeration">

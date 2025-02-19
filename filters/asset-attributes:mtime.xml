@@ -1,12 +1,13 @@
 <?xml version='1.0' encoding='utf-8'?>
-<filter namespace="lifecycle" name="mtime">
-  <label>Asset Modified Time</label>
+<filter namespace="asset-attributes" name="mtime">
+  <label>Last Modified Time</label>
   <arg>
     <name>op</name>
     <label>Operator</label>
     <type>
       <name>enumeration</name>
       <restriction base="enumeration">
+        <value description="equals">=</value>
         <value description="before">&lt;</value>
         <value description="after">&gt;</value>
       </restriction>
@@ -14,7 +15,7 @@
   </arg>
   <arg>
     <name>time</name>
-    <label>Date and time</label>
+    <label>Date and Time</label>
     <type>
       <name>date</name>
     </type>

@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <filter namespace="general" name="name">
+    <label>Name</label>
   <description>Case in-sensitive search across name fields</description>
   <arg>
     <name>name</name>

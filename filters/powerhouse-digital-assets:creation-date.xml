@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <filter namespace="powerhouse-digital-assets" name="creation-date">
-  <label>Digital Asset Creation Time</label>
+  <label>Creation Time</label>
   <arg>
     <name>op</name>
     <label>Operator</label>
@@ -14,7 +14,7 @@
   </arg>
   <arg>
     <name>value</name>
-    <label>Value</label>
+    <label>Date and Time</label>
     <type>
       <name>date</name>
     </type>
