@@ -1,3 +1,4 @@
+import copy
 from lxml import etree
 import requests
 from typing import Generator, Optional, Union, cast
@@ -49,11 +50,20 @@ class Request:
         return result_element
 
     @classmethod
-    def post(cls, name: str = "version", args: Optional[list] = None) -> "etree._Element":
-        if args is None:
-            argstr = ""
-        else:
-            argstr = "<args>" + "".join(f"<{arg[0]}>{arg[1]}</{arg[0]}>" for arg in args) + "</args>"
+    def post(
+        cls,
+        name: str,
+        args: Optional[list[tuple]] = None,
+        xml: Optional[list["etree._Element"]] = None,
+    ) -> "etree._Element":
+        argstr = ""
+        if args is not None or xml is not None:
+            argstr = "<args>"
+            if args is not None:
+                argstr += "".join(f"<{arg[0]}>{arg[1]}</{arg[0]}>" for arg in args)
+            if xml is not None:
+                argstr += "".join(etree.tostring(x, encoding="utf-8").decode("utf-8") for x in xml)
+            argstr += "</args>"
 
         payload = f"""
             <request>
@@ -67,6 +77,160 @@ class Request:
             return cls.parse_xml(response.text)
         except ValueError:
             raise ValueError(f'Unexpected response from "{payload}" of "{response.text}"')
+
+    @property
+    def data(self) -> "etree._Element":
+        """Abstract property that must be implemented in subclasses."""
+        return cast("etree._Element", None)
+
+    def export(self, fn: str) -> None:
+        with open(fn, "wb") as f:
+            f.write(etree.tostring(self.data, pretty_print=True, encoding="utf-8", xml_declaration=True))
+
+
+class Namespace(Request):
+    @classmethod
+    def filter_spaces(cls) -> list["Namespace"]:
+        """Returns a list of filter namespaces"""
+        rv = cls.post("asset.filter.namespace.list")
+        return [cls(x) for x in rv.xpath("./namespace/text()")]
+
+    @classmethod
+    def from_xml(cls, xml_obj: "etree._Element") -> "Namespace":
+        obj = cls(xml_obj.get("name"))
+        obj._data = xml_obj
+
+        return obj
+
+    def __init__(self, namespace: Optional[str] = None) -> None:
+        self.namespace = namespace
+        self._data: Optional["etree._Element"] = None
+        self._filters: Optional["etree._Element"] = None
+
+    @property
+    def label(self) -> str:
+        val = self.data.xpath("./label/text()")
+        return "" if len(val) == 0 else val[0]
+
+    @property
+    def data(self) -> "etree._Element":
+        if self._data is None:
+            r = self.post("asset.filter.namespace.describe", [("namespace", self.namespace)])
+            self._data = None if r is None else r.getchildren()[0]
+        return self._data
+
+    @property
+    def filters(self):
+        if self._filters is None:
+            r = self.post("asset.filter.list", [("namespace", self.namespace)])
+            self._filters = None if r is None else [Filter(self.namespace, x) for x in r.xpath("./filter/text()")]
+        return self._filters
+
+    @property
+    def exists(self) -> bool:
+        r = self.post(
+            "asset.filter.namespace.exists",
+            [("namespace", self.namespace)],
+        )
+        return r.xpath("./exists/text()") == ["true"]
+
+    def destroy(self) -> None:
+        if self.exists:
+            self.post(
+                "asset.filter.namespace.destroy",
+                [("namespace", self.namespace)],
+            )
+
+    def create(self) -> None:
+        self.destroy()
+
+        self.post(
+            "asset.filter.namespace.create",
+            [("namespace", self.namespace)],
+            self.data.getchildren(),
+        )
+
+
+class Filter(Request):
+    @classmethod
+    def from_xml(cls, xml_obj: "etree._Element") -> "Filter":
+        obj = cls(xml_obj.get("namespace"), xml_obj.get("name"))
+        obj._data = xml_obj
+
+        return obj
+
+    def __init__(self, namespace: Optional[str] = None, name: Optional[str] = None) -> None:
+        self.namespace = namespace
+        self.name = name
+        self._data: Optional["etree._Element"] = None
+
+    @property
+    def description(self) -> str:
+        desc = self.data.xpath("./description/text()")
+        return "" if len(desc) == 0 else desc[0]
+
+    @property
+    def label(self) -> str:
+        label = self.data.xpath("./label/text()")
+        return "" if len(label) == 0 else label[0]
+
+    @property
+    def data(self) -> "etree._Element":
+        if self._data is None:
+            r = self.post(
+                "asset.filter.describe",
+                [("namespace", self.namespace), ("name", self.name)],
+            )
+            self._data = None if r is None else r.getchildren()[0]
+        return self._data
+
+    @property
+    def exists(self) -> bool:
+        r = self.post(
+            "asset.filter.exists",
+            [("namespace", self.namespace), ("name", self.name)],
+        )
+        return r.xpath("./exists/text()") == ["true"]
+
+    def destroy(self) -> None:
+        if self.exists:
+            self.post(
+                "asset.filter.destroy",
+                [("namespace", self.namespace), ("name", self.name)],
+            )
+
+    def create(self) -> None:
+        self.destroy()
+
+        # Need to transform <type>
+        xargs = copy.deepcopy(self.data)
+
+        def transform_type_elements(root):
+            """
+            Modifies all <type> elements in the given XML tree:
+            - Moves <name> value to an attribute "type"
+            - Removes the <name> element
+
+            :param root: lxml.etree._Element (Root of the XML document)
+            """
+            for type_elem in root.findall(".//type"):  # Find all <type> elements
+                name_elem = type_elem.find("name")  # Find the <name> element inside <type>
+                if name_elem is not None:
+                    type_value = name_elem.text.strip() if name_elem.text else ""
+                    type_elem.set("type", type_value)  # Set as attribute
+                    type_elem.remove(name_elem)  # Remove <name> element
+
+                # Check if <type> has no remaining child elements
+                if not list(type_elem):
+                    type_elem.text = None
+
+        transform_type_elements(xargs)
+
+        self.post(
+            "asset.filter.create",
+            [("namespace", self.namespace), ("name", self.name)],
+            xargs.getchildren(),
+        )
 
 
 class Asset(Request):
@@ -83,6 +247,21 @@ class Asset(Request):
         if a.is_collection:
             return Collection(a.id)
         return a
+
+    @classmethod
+    def query(cls, query: str) -> list[Union["Asset", "Collection"]]:
+        """Finds a list of assets matching the given query"""
+        qr = cls.post("asset.query", [("where", query), ("action", "get-meta")])
+
+        assets = qr.xpath("./asset")
+        rv: list[Union["Asset", "Collection"]] = []
+        for asset in assets:
+            a = cls.from_xml(asset)
+            if a.is_collection:
+                rv.append(Collection(a.id))
+            else:
+                rv.append(a)
+        return rv
 
     @classmethod
     def from_xml(cls, xml_obj: "etree._Element") -> "Asset":
@@ -132,20 +311,20 @@ class Asset(Request):
     @property
     def name(self) -> str:
         name = self.data.find("name")
-        return "" if name is None else name.text
+        return "" if name is None else cast(str, name.text)
 
     @property
     def parent(self) -> str:
         parent = self.data.find("parent")
-        return "" if parent is None else parent.text
+        return "" if parent is None else cast(str, parent.text)
 
     @property
     def type(self) -> str:
         ty = self.data.find("type")
-        return "" if ty is None else ty.text
+        return "" if ty is None else cast(str, ty.text)
 
     @property
-    def data(self):
+    def data(self) -> "etree._Element":
         if self._data is None:
             r = self.post("asset.get", [("id", self.id)])
             self._data = None if r is None else r.getchildren()[0]
@@ -210,18 +389,6 @@ class Collection(Asset):
     @property
     def assets_all(self) -> Generator[Asset, None, None]:
         return self.get_assets(True)
-
-
-class Filter(Asset):
-    @classmethod
-    def query_ns_name(cls, namespace: str, name: str) -> "Filter":
-        """Finds the filter with the given namespace & name"""
-        rv = cls.post("asset.filter.describe", [("namespace", namespace), ("name", name)])
-        f = cast("Filter", cls.from_xml(rv.getchildren()[0]))
-        return f
-
-    def __init__(self, id: Optional[str]) -> None:
-        super().__init__(id)
 
 
 class Server(Request):
