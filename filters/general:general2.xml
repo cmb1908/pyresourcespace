@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<filter namespace="general" name="general">
+<filter namespace="general" name="general2">
   <description>Case in-sensitive search across multiple fields and descriptions</description>
   <label>General (testing)</label>
   <arg>
