@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<filter namespace="powerhouse-entities" name="name">
-  <label>Entity Name</label>
+<filter namespace="powerhouse-places" name="Name">
+  <label>Place Name</label>
   <arg>
     <name>name</name>
     <label>Name</label>
@@ -22,5 +22,5 @@
       </restriction>
     </type>
   </arg>
-  <aql>(mtext contains-any ignore-case '$${name}$$' and xpath(powerhouse.entity.of.interest:cataloging/name) $${Operator}$$ '$${name}$$') or (mtext contains-any ignore-case '$${name}$$' and xpath(powerhouse:related-entities/entity/name) $${Operator}$$ '$${name}$$' and xpath(emu:record/resource) = 'eparties')</aql>
+  <aql>(mtext contains-any ignore-case '$${name}$$' and xpath(powerhouse.place.of.interest:cataloging/name) $${Operator}$$ '$${name}$$') or (mtext contains-any ignore-case '$${name}$$' and xpath(powerhouse:related-places/place/name) $${Operator}$$ '$${name}$$' and xpath(emu:record/resource) = 'ethesaurus')</aql>
 </filter>

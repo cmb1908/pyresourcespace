@@ -7,18 +7,17 @@
     <type>
       <name>enumeration</name>
       <restriction base="enumeration">
-        <value description="equals">=</value>
-        <value description="starts with">starts with</value>
-        <value description="ends with">ends with</value>
+        <value description="equals">= ignore-case</value>
+        <value description="contains exactly">matches anywhere ignore-case</value>
       </restriction>
     </type>
   </arg>
   <arg>
-    <name>value</name>
-    <label>Value</label>
+    <name>name</name>
+    <label>Name</label>
     <type>
       <name>string</name>
     </type>
   </arg>
-  <aql>name $${op}$$ '$${value}$$'</aql>
+  <aql>name $${op}$$ '$${name}$$'</aql>
 </filter>
