@@ -2,3 +2,4 @@ types-lxml
 types-requests
 pytest
 pytest_check
+pytest-timeout

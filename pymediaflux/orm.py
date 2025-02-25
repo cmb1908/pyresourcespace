@@ -2,6 +2,7 @@ import copy
 from lxml import etree
 import requests
 from typing import Generator, Optional, Union, cast
+from xml.sax.saxutils import escape
 
 
 class Request:
@@ -151,6 +152,36 @@ class Namespace(Request):
         )
 
 
+class FilterArg:
+    def __init__(self, xml_obj: "etree._Element") -> None:
+        self.data = xml_obj
+
+    @property
+    def name(self) -> str:
+        name = self.data.xpath("./name/text()")
+        return "" if len(name) == 0 else name[0]
+
+    @property
+    def description(self) -> str:
+        desc = self.data.xpath("./description/text()")
+        return "" if len(desc) == 0 else desc[0]
+
+    @property
+    def label(self) -> str:
+        label = self.data.xpath("./label/text()")
+        return "" if len(label) == 0 else label[0]
+
+    @property
+    def type(self) -> str:
+        ty = self.data.xpath("./type/name/text()")
+        return "" if len(ty) == 0 else ty[0]
+
+    @property
+    def restrictions(self) -> dict[str, str]:
+        restrictions = self.data.xpath("./type/restriction/value")
+        return {r.get("description"): r.text for r in restrictions}
+
+
 class Filter(Request):
     @classmethod
     def from_xml(cls, xml_obj: "etree._Element") -> "Filter":
@@ -163,6 +194,7 @@ class Filter(Request):
         self.namespace = namespace
         self.name = name
         self._data: Optional["etree._Element"] = None
+        self._args: Optional[list["FilterArg"]] = None
 
     @property
     def description(self) -> str:
@@ -173,6 +205,12 @@ class Filter(Request):
     def label(self) -> str:
         label = self.data.xpath("./label/text()")
         return "" if len(label) == 0 else label[0]
+
+    @property
+    def args(self) -> list["FilterArg"]:
+        if self._args is None:
+            self._args = [FilterArg(x) for x in self.data.xpath("./arg")]
+        return cast(list["FilterArg"], self._args)
 
     @property
     def data(self) -> "etree._Element":
@@ -231,6 +269,13 @@ class Filter(Request):
             [("namespace", self.namespace), ("name", self.name)],
             xargs.getchildren(),
         )
+
+    def query_str(self, *args, **kwargs):
+        def e(v):
+            return escape(v, {'"': "&quot;", "'": "&apos;"}) if type(v) is str else v
+
+        args = ",".join(f"{e(k)}=\\'{e(v)}\\'" for k, v in kwargs.items())
+        return f"filter '{self.namespace}:{self.name}({args})'"
 
 
 class Asset(Request):

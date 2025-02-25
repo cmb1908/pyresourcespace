@@ -7,18 +7,10 @@
     <type>
       <name>enumeration</name>
       <restriction base="enumeration">
-        <value description="equals">=</value>
-        <value description="not equals">!=</value>
-        <value description="contains">contains</value>
-        <value description="contains any">contains-any</value>
-        <value description="contains (ignore case)">contains ignore-case</value>
-        <value description="contains no">contains-no</value>
-        <value description="starts with">starts with</value>
-        <value description="ends with">ends with</value>
-        <value description="less than">&lt;</value>
-        <value description="greater than">&gt;</value>
-        <value description="greater than equals">&gt;=</value>
-        <value description="less than equals">&lt;=</value>
+          <value description="equals">= ignore-case</value>
+          <value description="contains any of">contains-any ignore-case</value>
+          <value description="contains all of">contains-all ignore-case</value>
+          <value description="contains exactly">contains ignore-case literal</value>
       </restriction>
     </type>
   </arg>
@@ -29,5 +21,5 @@
       <name>string</name>
     </type>
   </arg>
-  <aql>xpath(powerhouse.object.of.interest:description/description) $${op}$$ '$${value}$$'</aql>
+  <aql>mtext contains-any ignore-case '$${value}$$' and xpath(powerhouse.object.of.interest:description/description) $${op}$$ '$${value}$$'</aql>
 </filter>

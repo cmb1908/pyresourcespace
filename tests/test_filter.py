@@ -1,3 +1,4 @@
+import pytest
 import pytest_check as check
 
 from pymediaflux import orm
@@ -25,3 +26,9 @@ def test_filter_toi_irn_in_toi(server_connect):
     results = orm.Asset.query("filter 'powerhouse-toi:irn(value=\\'234\\')' and asset has parent collection 5642820")
 
     check.equal(len(results), 3, f"Expecting 3 results, got {len(results)}")
+
+
+@pytest.mark.timeout(2)
+def test_filter_query(query_str):
+
+    orm.Asset.query(query_str)

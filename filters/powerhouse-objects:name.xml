@@ -10,7 +10,8 @@
     </type>
   </arg>
   <arg>
-    <name>Operator</name>
+    <name>op</name>
+    <label>Operator</label>
     <description>Operator</description>
     <type>
       <name>enumeration</name>
@@ -22,5 +23,5 @@
       </restriction>
     </type>
   </arg>
-  <aql>(mtext contains-any ignore-case '$${name}$$' and xpath(powerhouse.object.of.interest:cataloging/name) $${Operator}$$ '$${name}$$') or (mtext contains-any ignore-case '$${name}$$' and xpath(powerhouse:related-objects/object/name) $${Operator}$$ '$${name}$$' and xpath(emu:record/resource) = 'ecatalogue')</aql>
+  <aql>(mtext contains-any ignore-case '$${name}$$' and xpath(powerhouse.object.of.interest:cataloging/name) $${op}$$ '$${name}$$') or (mtext contains-any ignore-case '$${name}$$' and xpath(powerhouse:related-objects/object/name) $${op}$$ '$${name}$$' and xpath(emu:record/resource) = 'ecatalogue')</aql>
 </filter>
