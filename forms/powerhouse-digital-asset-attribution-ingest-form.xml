@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='utf-8'?>
+<form id="5" name="powerhouse-digital-asset-attribution-ingest-form">
+  <label>Digital Asset Attribution</label>
+  <tag>TYPE:file-ingest</tag>
+  <ctime tz="Australia/Sydney" gmt-offset="10.0" dst="true" millisec="1740984888052">03-Mar-2025 17:54:48</ctime>
+  <creator id="182">
+    <domain>local</domain>
+    <user>fidelio.tandy</user>
+  </creator>
+  <layout>
+    <vertical>
+      <section name="powerhouse-digital-asset-attribution-section">
+        <label>Attribution</label>
+        <xpath>powerhouse.digital.asset:attribution</xpath>
+        <min-occurs>1</min-occurs>
+        <max-occurs>1</max-occurs>
+        <editable>true</editable>
+        <layout>
+          <field name="credit-byline-field">
+            <label>Credit Byline</label>
+            <xpath>credit-byline</xpath>
+            <editable>true</editable>
+          </field>
+          <field name="creator-field">
+            <label>Creator</label>
+            <xpath>creator</xpath>
+            <editable>true</editable>
+          </field>
+          <section name="contact-info-section">
+            <label>Contact Info</label>
+            <xpath>contact-info</xpath>
+            <min-occurs>1</min-occurs>
+            <max-occurs>1</max-occurs>
+            <editable>true</editable>
+            <layout>
+              <vertical>
+                <horizontal>
+                  <field name="country-field">
+                    <label>Country</label>
+                    <xpath>country</xpath>
+                    <editable>true</editable>
+                  </field>
+                  <field name="city-field">
+                    <label>City</label>
+                    <xpath>city</xpath>
+                    <editable>true</editable>
+                  </field>
+                </horizontal>
+                <horizontal>
+                  <field name="address-field">
+                    <label>Address</label>
+                    <xpath>address</xpath>
+                    <editable>true</editable>
+                  </field>
+                  <field name="postal-field">
+                    <label>Postal Code</label>
+                    <xpath>postal-code</xpath>
+                    <editable>true</editable>
+                  </field>
+                </horizontal>
+                <horizontal>
+                  <field name="state-field">
+                    <label>State</label>
+                    <xpath>state</xpath>
+                    <editable>true</editable>
+                  </field>
+                  <field name="email-field">
+                    <label>Email</label>
+                    <xpath>email</xpath>
+                    <editable>true</editable>
+                  </field>
+                </horizontal>
+                <horizontal>
+                  <field name="phone-field">
+                    <label>Phone</label>
+                    <xpath>phone</xpath>
+                    <editable>true</editable>
+                  </field>
+                  <field name="web-url-field">
+                    <label>Web URL</label>
+                    <xpath>web-url</xpath>
+                    <editable>true</editable>
+                  </field>
+                </horizontal>
+              </vertical>
+            </layout>
+          </section>
+        </layout>
+      </section>
+    </vertical>
+  </layout>
+</form>

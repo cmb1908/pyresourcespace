@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<form id="6" name="powerhouse-digital-asset-cataloging-ingest-form">
+  <label>Digital Asset Cataloging</label>
+  <tag>TYPE:file-ingest</tag>
+  <ctime tz="Australia/Sydney" gmt-offset="10.0" dst="true" millisec="1740984888054">03-Mar-2025 17:54:48</ctime>
+  <creator id="182">
+    <domain>local</domain>
+    <user>fidelio.tandy</user>
+  </creator>
+  <layout>
+    <vertical>
+      <section name="powerhouse-digital-asset-cataloging-section">
+        <label>Cataloging</label>
+        <xpath>powerhouse.digital.asset:cataloging</xpath>
+        <min-occurs>1</min-occurs>
+        <max-occurs>1</max-occurs>
+        <editable>true</editable>
+        <layout>
+          <field name="type-field">
+            <label>Type</label>
+            <xpath>type</xpath>
+            <editable>true</editable>
+          </field>
+          <field name="description-field">
+            <label>Description</label>
+            <xpath>description</xpath>
+            <editable>true</editable>
+          </field>
+          <vertical>
+            <horizontal>
+              <field name="category-field">
+                <label>Category</label>
+                <xpath>category</xpath>
+                <editable>true</editable>
+              </field>
+              <field name="sub-category-field">
+                <label>Sub Category</label>
+                <xpath>sub-category</xpath>
+                <editable>true</editable>
+              </field>
+            </horizontal>
+            <horizontal>
+              <field name="cultural-sensitivity-field">
+                <label>Cultural Sensitivity</label>
+                <xpath>cultural-sensitivity</xpath>
+                <editable>true</editable>
+              </field>
+              <field name="keyword-field">
+                <label>Keyword</label>
+                <xpath>keyword</xpath>
+                <editable>true</editable>
+              </field>
+            </horizontal>
+          </vertical>
+        </layout>
+      </section>
+    </vertical>
+  </layout>
+</form>

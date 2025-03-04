@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='utf-8'?>
+<form id="12" name="powerhouse-digital-asset-usage">
+  <label>Digital Asset Usage</label>
+  <tag>TYPE:asset-detail</tag>
+  <predicate>( (path starts with '/data/powerhouse/Digital Warehouse' or path starts with '/data/powerhouse/Asset Library') and not(asset is collection)) or type = powerhouse/job/warehouse</predicate>
+  <ctime tz="Australia/Sydney" gmt-offset="10.0" dst="true" millisec="1740984888063">03-Mar-2025 17:54:48</ctime>
+  <creator id="182">
+    <domain>local</domain>
+    <user>fidelio.tandy</user>
+  </creator>
+  <layout>
+    <vertical>
+      <section name="powerhouse-digital-asset-usage-section">
+        <label>Usage</label>
+        <xpath>powerhouse.digital.asset:usage</xpath>
+        <min-occurs>1</min-occurs>
+        <max-occurs>1</max-occurs>
+        <editable>true</editable>
+        <layout>
+          <field name="instructions-field">
+            <label>Instructions</label>
+            <xpath>instructions</xpath>
+            <editable>true</editable>
+          </field>
+          <vertical>
+            <horizontal>
+              <field name="rejection-details-field">
+                <label>Rejection Details</label>
+                <xpath>rejection-details</xpath>
+                <editable>true</editable>
+              </field>
+              <field name="asset-copyright-status-field">
+                <label>Asset Copyright Status</label>
+                <xpath>asset-copyright-status</xpath>
+                <editable>true</editable>
+              </field>
+            </horizontal>
+            <horizontal>
+              <field name="model-release-status-field">
+                <label>Model Release Status</label>
+                <xpath>model-release-status</xpath>
+                <editable>true</editable>
+              </field>
+              <field name="usage-field">
+                <label>Usage</label>
+                <xpath>usage</xpath>
+                <editable>true</editable>
+              </field>
+            </horizontal>
+            <field name="headline-field">
+              <label>Headline</label>
+              <xpath>headline</xpath>
+              <editable>true</editable>
+            </field>
+            <field name="caption-field">
+              <label>Caption</label>
+              <xpath>caption</xpath>
+              <editable>true</editable>
+            </field>
+            <field name="alt-text-field">
+              <label>Alt Text</label>
+              <xpath>alt-text</xpath>
+              <editable>true</editable>
+            </field>
+          </vertical>
+        </layout>
+      </section>
+    </vertical>
+  </layout>
+</form>

@@ -1,40 +1,24 @@
 import click
 from dotenv import load_dotenv
-import json
+from lxml import etree
 import os
 
 from . import orm
-from . import util
 
 
-def stats(obj: "orm.Asset"):
-    r = util.MergeDict()
-    if obj.is_collection:
-        if obj.type == "powerhouse/project":
-            print(f"Project: {obj.name}")
-        elif obj.type == "powerhouse/job/warehouse":
-            print(f" Job: {obj.name}")
-        else:
-            print(f"--Unknown: {obj.name}")
-        cobj = orm.Collection(obj.id)
-        for asset in cobj.assets:
-            r += stats(asset)
-    else:
-        sz = 0 if obj.size is None else obj.size
-        if obj.has_exif:
-            r[obj.type] = {obj.extension: {"exif": 1, "size": sz}}
-        else:
-            r[obj.type] = {obj.extension: {"no-exif": 1, "size": sz}}
+def dump(directory: str):
+    forms = orm.Form.forms()
 
-    return r
+    for form in forms:
+        form.export(f"{directory}/{form.name}.xml")
 
 
 @click.command()
 @click.option("--api-host", required=False, help="API host (e.g., api.example.com)")
 @click.option("--api-port", required=False, help="API port (optional)")
 @click.option("--api-token", required=False, help="API token for authentication")
-@click.argument("id")
-def main(api_host, api_port, api_token, id):
+@click.argument("directory")
+def main(api_host, api_port, api_token, directory):
     """
     Sends a request to the MediaFlux API to fetch server version details.
     """
@@ -66,10 +50,7 @@ def main(api_host, api_port, api_token, id):
 
     orm.Request.url = url
     orm.Request.headers = headers
-    obj = orm.Asset(id)
-    st = stats(obj)
-    print(obj.name)
-    print(json.dumps(st, indent=4, sort_keys=True))
+    dump(directory)
 
 
 if __name__ == "__main__":

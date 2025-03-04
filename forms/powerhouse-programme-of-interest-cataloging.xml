@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='utf-8'?>
+<form id="16" name="powerhouse-programme-of-interest-cataloging">
+  <label>Programme of Interest Cataloging</label>
+  <tag>TYPE:asset-detail</tag>
+  <predicate>type = powerhouse/interest/programme</predicate>
+  <ctime tz="Australia/Sydney" gmt-offset="10.0" dst="true" millisec="1740984888070">03-Mar-2025 17:54:48</ctime>
+  <creator id="182">
+    <domain>local</domain>
+    <user>fidelio.tandy</user>
+  </creator>
+  <layout>
+    <vertical>
+      <section name="programme-of-interest-cataloging-section">
+        <label>Cataloging</label>
+        <xpath>powerhouse.programme.of.interest:cataloging</xpath>
+        <min-occurs>1</min-occurs>
+        <max-occurs>1</max-occurs>
+        <editable>true</editable>
+        <layout>
+          <field name="title-field">
+            <label>Title</label>
+            <xpath>title</xpath>
+            <editable>true</editable>
+          </field>
+          <field name="event-number-field">
+            <label>Event Number</label>
+            <xpath>event-number</xpath>
+            <editable>true</editable>
+          </field>
+          <field name="description-field">
+            <label>Description</label>
+            <xpath>description</xpath>
+            <editable>true</editable>
+          </field>
+          <field name="extended-description-field">
+            <label>Extended Description</label>
+            <xpath>extended-description</xpath>
+            <editable>true</editable>
+          </field>
+          <field name="summary-field">
+            <label>Summary</label>
+            <xpath>summary</xpath>
+            <editable>true</editable>
+          </field>
+          <horizontal>
+            <field name="completion-date-field">
+              <label>Completion Date</label>
+              <xpath>completion-date</xpath>
+              <editable>true</editable>
+            </field>
+            <field name="commencement-date-field">
+              <label>Commencement Date</label>
+              <xpath>commencement-date</xpath>
+              <editable>true</editable>
+            </field>
+          </horizontal>
+          <field name="type-field">
+            <label>Type</label>
+            <xpath>type</xpath>
+            <editable>true</editable>
+          </field>
+        </layout>
+      </section>
+    </vertical>
+  </layout>
+</form>

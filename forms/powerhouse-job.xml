@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<form id="8" name="powerhouse-job">
+  <label>Job</label>
+  <tag>TYPE:asset-detail</tag>
+  <predicate>type = powerhouse/job/warehouse</predicate>
+  <ctime tz="Australia/Sydney" gmt-offset="10.0" dst="true" millisec="1740984888057">03-Mar-2025 17:54:48</ctime>
+  <creator id="182">
+    <domain>local</domain>
+    <user>fidelio.tandy</user>
+  </creator>
+  <layout>
+    <vertical>
+      <section name="powerhouse-job-section">
+        <label>Job</label>
+        <xpath>powerhouse:job</xpath>
+        <min-occurs>1</min-occurs>
+        <max-occurs>1</max-occurs>
+        <editable>true</editable>
+        <layout>
+          <horizontal>
+            <field name="powerhouse-job-status-field">
+              <label>Status</label>
+              <xpath>status</xpath>
+              <editable>true</editable>
+            </field>
+          </horizontal>
+          <horizontal>
+            <field name="powerhouse-job-project-field">
+              <label>Project</label>
+              <xpath>project</xpath>
+              <editable>true</editable>
+            </field>
+          </horizontal>
+          <field name="powerhouse-job-description-field">
+            <label>Description</label>
+            <xpath>description</xpath>
+            <editable>true</editable>
+          </field>
+        </layout>
+      </section>
+    </vertical>
+  </layout>
+</form>

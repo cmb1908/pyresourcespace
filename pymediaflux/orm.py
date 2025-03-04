@@ -278,6 +278,64 @@ class Filter(Request):
         return f"filter '{self.namespace}:{self.name}({args})'"
 
 
+class Form(Request):
+    @classmethod
+    def forms(cls) -> list["Form"]:
+        """Returns a list of forms"""
+        rv = cls.post("asset.form.list")
+        return [cls(x) for x in rv.xpath("./form/text()")]
+
+    @classmethod
+    def from_xml(cls, xml_obj: "etree._Element") -> "Form":
+        obj = cls(xml_obj.get("name"))
+        obj._data = xml_obj
+
+        return obj
+
+    def __init__(self, name: Optional[str]) -> None:
+        self.name = name
+        self._data: Optional["etree._Element"] = None
+
+    @property
+    def label(self) -> str:
+        label = self.data.xpath("./label/text()")
+        return "" if len(label) == 0 else desc[0]
+
+    @property
+    def data(self) -> "etree._Element":
+        if self._data is None:
+            r = self.post(
+                "asset.form.describe",
+                [("name", self.name)],
+            )
+            self._data = None if r is None else r.getchildren()[0]
+        return self._data
+
+    @property
+    def exists(self) -> bool:
+        r = self.post(
+            "asset.form.exists",
+            [("name", self.name)],
+        )
+        return r.xpath("./exists/text()") == ["true"]
+
+    def destroy(self) -> None:
+        if self.exists:
+            self.post(
+                "asset.form.destroy",
+                [("name", self.name)],
+            )
+
+    def create(self) -> None:
+        self.destroy()
+
+        self.post(
+            "asset.form.create",
+            [("name", self.name)],
+            self.data.getchildren(),
+        )
+
+
 class Asset(Request):
     @classmethod
     def query_name(cls, name: str) -> Union["Asset", "Collection"]:
@@ -362,6 +420,11 @@ class Asset(Request):
     def parent(self) -> str:
         parent = self.data.find("parent")
         return "" if parent is None else cast(str, parent.text)
+
+    @property
+    def size(self) -> Optional[int]:
+        sz = self.data.xpath("./content/size/text()")
+        return None if len(sz) == 0 else int(sz[0])
 
     @property
     def type(self) -> str:

@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='utf-8'?>
+<form id="13" name="powerhouse-object-of-interest-cataloging">
+  <label>Object of Interest Cataloging</label>
+  <tag>TYPE:asset-detail</tag>
+  <predicate>type = powerhouse/interest/object</predicate>
+  <ctime tz="Australia/Sydney" gmt-offset="10.0" dst="true" millisec="1740984888065">03-Mar-2025 17:54:48</ctime>
+  <creator id="182">
+    <domain>local</domain>
+    <user>fidelio.tandy</user>
+  </creator>
+  <layout>
+    <vertical>
+      <section name="object-of-interest-cataloging-section">
+        <label>Cataloging</label>
+        <xpath>powerhouse.object.of.interest:cataloging</xpath>
+        <min-occurs>1</min-occurs>
+        <max-occurs>1</max-occurs>
+        <editable>true</editable>
+        <layout>
+          <field name="name-field">
+            <label>Name</label>
+            <xpath>name</xpath>
+            <editable>true</editable>
+          </field>
+          <field name="title-field">
+            <label>Title</label>
+            <xpath>title</xpath>
+            <editable>true</editable>
+          </field>
+          <field name="type-field">
+            <label>Type</label>
+            <xpath>type</xpath>
+            <editable>true</editable>
+          </field>
+          <field name="rights-status-field">
+            <label>Rights Status</label>
+            <xpath>rights-status</xpath>
+            <editable>true</editable>
+          </field>
+          <horizontal>
+            <field name="registration-number-field">
+              <label>Registration Number</label>
+              <xpath>registration-number</xpath>
+              <editable>true</editable>
+            </field>
+            <field name="barcode-field">
+              <label>Barcode</label>
+              <xpath>barcode</xpath>
+              <editable>true</editable>
+            </field>
+          </horizontal>
+          <field name="significance-field">
+            <label>Significance</label>
+            <xpath>significance</xpath>
+            <editable>true</editable>
+          </field>
+          <field name="collection-field">
+            <label>Collection</label>
+            <xpath>collection</xpath>
+            <editable>true</editable>
+          </field>
+          <field name="development-field">
+            <label>Development</label>
+            <xpath>development</xpath>
+            <editable>true</editable>
+          </field>
+          <field name="curatorial-department-field">
+            <label>Curatorial Department</label>
+            <xpath>curatorial-department</xpath>
+            <editable>true</editable>
+          </field>
+        </layout>
+      </section>
+    </vertical>
+  </layout>
+</form>
